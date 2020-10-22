@@ -1,0 +1,17 @@
+#ifndef _PLAYER_H_
+#define _PLAYER_H_
+
+#include "Creature.hpp"
+#include "Item.hpp"
+#include <iostream>
+
+class Player: public Creature{
+    private:
+        Item Weapon;
+        Item Armor;
+    public:
+        void setWeapon(Item sword);
+        void setArmor(Item armor);
+};
+
+#endif
