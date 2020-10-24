@@ -4,5 +4,5 @@
 
 CreatureAction::CreatureAction(Creature* _owner): Action(){
     owner = _owner;
-    std::cout << "CreatureAction::CreatureAction(" << owner->name << ')' << std::endl;
+    //std::cout << "CreatureAction::CreatureAction(" << owner->name << ')' << std::endl;
 }

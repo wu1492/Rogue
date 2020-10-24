@@ -8,10 +8,90 @@
 #include <xercesc/util/PlatformUtils.hpp>
 #include "DungeonXMLHandler.hpp"
 #include <exception>
+#include <atomic> 
+#include <thread>
+#include <sstream>
+#include "ObjectDisplayGrid.hpp"
+#include "GridChar.hpp"
+std::atomic_bool isRunning(true);
 
+
+void displayDungeon(ObjectDisplayGrid* grid, Dungeon* dungeon){
+    
+    while(isRunning){
+        int topHeight = dungeon->topHeight;
+        int height = dungeon->bottomHeight + dungeon->topHeight + dungeon->gameHeight;
+        for(int i = 0;i < dungeon->width;i++){
+            for(int j = 0; j < height;j++){
+                grid->addObjectToDisplay(new GridChar(' '),i,j);
+            }
+        }
+        
+        for(int i = 0; i < dungeon->num_rooms;i++){
+            int posleft = dungeon->rooms[i]->posX;
+            int posright = posleft + dungeon->rooms[i]->width+1;
+            int postop = dungeon->rooms[i]->posY + topHeight;
+            int posbottom = postop + dungeon->rooms[i]->height+1;
+            
+            for(int k = postop +1; k < posbottom;k++){
+                for(int j = posleft + 1; j < posright;j++){
+                    grid->addObjectToDisplay(new GridChar('.'),j,k);
+                }
+            }
+            for(int k = 0; k<dungeon->rooms[i]->creature_size;k++){
+                grid->addObjectToDisplay(new GridChar(dungeon->rooms[i]->creatures[k]->type),dungeon->rooms[i]->creatures[k]->posX+posleft+1,dungeon->rooms[i]->creatures[k]->posY+postop+1);
+            }
+            for(int k = 0; k<dungeon->rooms[i]->item_size;k++){
+                //我不知道item该用啥符号表示，所以目前暂时用n，我去piazza问一下
+                grid->addObjectToDisplay(new GridChar('n'),dungeon->rooms[i]->items[k]->posX+posleft+1,dungeon->rooms[i]->items[k]->posY+postop+1);
+            }
+            for(int l = postop; l <= posbottom;l++){
+                grid->addObjectToDisplay(new GridChar('X'),posright,l);
+                grid->addObjectToDisplay(new GridChar('X'),posleft,l);
+            }
+            for(int l = posleft; l <= posright;l++){
+                grid->addObjectToDisplay(new GridChar('X'),l,postop);
+                grid->addObjectToDisplay(new GridChar('X'),l,posbottom);
+            }
+            
+        }
+        for(int l = 0; l < dungeon->num_passages;l++){
+            for(int m = 0; m < dungeon->passages[l]->num_posx - 1;m++){
+                    
+                if(dungeon->passages[l]->posxs[m] == dungeon->passages[l]->posxs[m+1]){
+                    int x = dungeon->passages[l]->posxs[m];
+                    for(int k = dungeon->passages[l]->posys[m]; k <= dungeon->passages[l]->posys[m+1];k++){
+                        if(grid->getchar(x,k+topHeight) != '.'){
+                            if(grid->getchar(x,k+topHeight) == 'X'){ 
+                                grid->addObjectToDisplay(new GridChar('+'),x,k+topHeight);
+                            }
+                            else{
+                                grid->addObjectToDisplay(new GridChar('#'),x,k+topHeight);
+                            }
+                        }
+                    }
+                }
+                else{
+                    int y = dungeon->passages[l]->posys[m];
+                    for(int k = dungeon->passages[l]->posxs[m]; k <= dungeon->passages[l]->posxs[m+1];k++){
+                        if(grid->getchar(k,y+topHeight) != '.'){
+                            if(grid->getchar(k,y+topHeight) == 'X'){ 
+                                grid->addObjectToDisplay(new GridChar('+'),k,y+topHeight);
+                            }
+                            else{
+                                grid->addObjectToDisplay(new GridChar('#'),k,y+topHeight);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        grid -> update();
+    }
+}
 
 int main(int argc, char* argv[]) {
-
+    Dungeon* dungeon;
     std::string fileName;
     try{
         xercesc::XMLPlatformUtils::Initialize();
@@ -42,7 +122,7 @@ int main(int argc, char* argv[]) {
         XMLCh * fileNameXMLEnc = xercesc::XMLString::transcode(fileName.c_str()); //Encode string as UTF-16, but transcode needs casting as const char * (not std::string)
         parser->parse(fileNameXMLEnc);
         xercesc::XMLString::release(&fileNameXMLEnc);
-        Dungeon* dungeon = handler->getDungeon();
+        dungeon = handler->getDungeon();
         //dungeon.toString();
 		delete parser;
 		delete handler;
@@ -73,8 +153,15 @@ int main(int argc, char* argv[]) {
         std::cout << "Unexpected Exception \n" ;
         return -1;
 	}
+
     xercesc::XMLPlatformUtils::Terminate(); //valgrind will say there's memory errors if not included
-	return 0;
+	
+    ObjectDisplayGrid grid(dungeon->width,dungeon->topHeight,dungeon->gameHeight,dungeon->bottomHeight,5);
+    ObjectDisplayGrid* pGrid = &grid;
+    std::thread displayThread(displayDungeon, pGrid,dungeon);
+    displayThread.join();
+    
+    return 0;
 }
 
 

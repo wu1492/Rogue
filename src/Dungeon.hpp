@@ -32,7 +32,7 @@ public:
     void getDungeon(std::string name, int width, int gameHeight);
     void addRoom(Room*);
     void addCreature(Creature);
-    void addPassage(Passage);
+    void addPassage(Passage*);
     void addItem(Item);
 
 	std::string toString();

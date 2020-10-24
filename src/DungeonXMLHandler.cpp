@@ -87,9 +87,10 @@ void DungeonXMLHandler::startElement(const XMLCh* uri, const XMLCh* localName, c
             playerbeingparsed -> room = _room;
             playerbeingparsed -> serial = _serial;
             playerbeingparsed -> name = _name;
+            playerbeingparsed -> type = '@';
             creabeingparsed = playerbeingparsed;
             roombeingparsed -> setCreature(playerbeingparsed);
-            dungeon->addCreature(*creabeingparsed);
+            //dungeon->addCreature(*creabeingparsed);
             is_room = false;
             is_item = false;
             is_crea = true;
@@ -103,7 +104,7 @@ void DungeonXMLHandler::startElement(const XMLCh* uri, const XMLCh* localName, c
             monsterbeingparsed -> setName(_name);
             roombeingparsed -> setCreature(monsterbeingparsed);
             creabeingparsed = monsterbeingparsed;
-            dungeon->addCreature(*creabeingparsed);
+            //dungeon->addCreature(*creabeingparsed);
             is_room = false;
             is_item = false;
             is_crea = true;
@@ -117,8 +118,11 @@ void DungeonXMLHandler::startElement(const XMLCh* uri, const XMLCh* localName, c
             if(playerbeingparsed != NULL){
                 scroll_ptr -> setOwner(playerbeingparsed);
             }
+            else{
+                roombeingparsed->setItem(scroll_ptr);
+            }
             itembeingparsed = scroll_ptr;
-            dungeon->addItem(*itembeingparsed);
+            //dungeon->addItem(*itembeingparsed);
             is_room = false;
             is_item = true;
             is_crea = false;
@@ -133,8 +137,11 @@ void DungeonXMLHandler::startElement(const XMLCh* uri, const XMLCh* localName, c
                 armor_ptr -> setOwner(playerbeingparsed);
                 playerbeingparsed -> setArmor(*armor_ptr);
             }
+            else{
+                roombeingparsed->setItem(armor_ptr);
+            }
             itembeingparsed = armor_ptr;
-            dungeon->addItem(*itembeingparsed);
+            //dungeon->addItem(*itembeingparsed);
             is_room = false;
             is_item = true;
             is_crea = false;
@@ -149,8 +156,11 @@ void DungeonXMLHandler::startElement(const XMLCh* uri, const XMLCh* localName, c
                 sword_ptr -> setOwner(playerbeingparsed);
                 playerbeingparsed->setWeapon(*sword_ptr);
             }
+            else{
+                roombeingparsed->setItem(sword_ptr);
+            }
             itembeingparsed = sword_ptr;
-            dungeon->addItem(*itembeingparsed);
+            //dungeon->addItem(*itembeingparsed);
             is_room = false;
             is_item = true;
             is_crea = false;
@@ -204,7 +214,7 @@ void DungeonXMLHandler::startElement(const XMLCh* uri, const XMLCh* localName, c
             int room2 = std::stoi(xmlChToString(getXMLChAttributeFromString(attributes,"room2")));
             int room1 = std::stoi(xmlChToString(getXMLChAttributeFromString(attributes,"room1")));
             passagebeingparsed = new Passage();
-            dungeon->addPassage(*passagebeingparsed);
+            dungeon->addPassage(passagebeingparsed);
             passagebeingparsed -> setID(room1,room2);
             passagebeingparsed -> setName(std::to_string(room1) + " " + std::to_string(room2));
             is_room = false;
@@ -324,19 +334,19 @@ void DungeonXMLHandler::endElement(const XMLCh* uri, const XMLCh* localName, con
 
         char *  qNameStr = xercesc::XMLString::transcode(qName);
         if (case_insensitive_match(qNameStr,"Room")) {
-            roombeingparsed = nullptr;
+            roombeingparsed = NULL;
         } else if (case_insensitive_match(qNameStr,"Item")) {
-            itemactionbeingparsed = nullptr;
+            itemactionbeingparsed = NULL;
         } else if (case_insensitive_match(qNameStr,"ItemAction")) {
-            itemactionbeingparsed = nullptr;
+            itemactionbeingparsed = NULL;
         } else if (case_insensitive_match(qNameStr,"Creature")) {
-            creabeingparsed = nullptr;
+            creabeingparsed = NULL;
         } else if (case_insensitive_match(qNameStr,"CreatureAction")) {
-            creaactionbeingparsed = nullptr;
+            creaactionbeingparsed = NULL;
         } else if (case_insensitive_match(qNameStr,"Player")) {
-            playerbeingparsed = nullptr;
+            playerbeingparsed = NULL;
         } else if (case_insensitive_match(qNameStr,"Monster")) {
-            monsterbeingparsed = nullptr;
+            monsterbeingparsed = NULL;
         }
 
         xercesc::XMLString::release(&qNameStr);

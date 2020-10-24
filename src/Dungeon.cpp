@@ -12,17 +12,17 @@ Dungeon::Dungeon(std::string _name, int _width,int _gameHeight,int _topHeight, i
     num_passages = 0;
     num_items = 0;
     num_rooms = 0;
-    std::cout << "Dungeon(" << _name << ',' << _width << ',' << _gameHeight << ',' << _topHeight << ',' << _bottomHeight << ')' << std::endl;
+   //std::cout << "Dungeon(" << _name << ',' << _width << ',' << _gameHeight << ',' << _topHeight << ',' << _bottomHeight << ')' << std::endl;
 }
 
 
 //我还没想明白这块到底是咋运作的，你可以研究一下
  void Dungeon::getDungeon(std::string name, int width, int gameHeight){
-    std::cout << "Dungeon::getDungeon(" << name << ',' << width << ',' << gameHeight << ')' << std::endl;
+   //std::cout << "Dungeon::getDungeon(" << name << ',' << width << ',' << gameHeight << ')' << std::endl;
  }
 /*
 void addRoom(Room){
-    std::cout << "Dungeon::addRoom(Room)" << std::endl;
+   //std::cout << "Dungeon::addRoom(Room)" << std::endl;
 }
 */
 
@@ -32,7 +32,7 @@ void Dungeon::addRoom(Room* _room)
     num_rooms++;
     rooms.resize(num_rooms);
     rooms[num_rooms - 1] = _room;
-    std::cout << "Dungeon::addRoom(" << _room->name << ')' << std::endl; // needs fixing, cout "_creature" kinda cuts corner
+   //std::cout << "Dungeon::addRoom(" << _room->name << ')' << std::endl; // needs fixing, cout "_creature" kinda cuts corner
 }
 
 
@@ -42,15 +42,15 @@ void Dungeon::addCreature(Creature _creature)
     num_creatures++;
     creatures.resize(num_creatures);
     creatures[num_creatures - 1] = &_creature;
-    std::cout << "Dungeon::addCreature(" << _creature.name << ')' << std::endl;
+   //std::cout << "Dungeon::addCreature(" << _creature.name << ')' << std::endl;
 }
 
 
-void Dungeon::addPassage(Passage _pas){
+void Dungeon::addPassage(Passage* _pas){
     num_passages++;
     passages.resize(num_passages);
-    passages[num_passages - 1] = &_pas;
-    std::cout << "Dungeon::addCreature(Passage)" << std::endl;
+    passages[num_passages - 1] = _pas;
+   //std::cout << "Dungeon::addCreature(Passage)" << std::endl;
 }
 
 
@@ -59,7 +59,7 @@ void Dungeon::addItem(Item _item){
     num_items++;
     items.resize(num_items);
     items[num_items - 1] = &_item;
-    std::cout << "Dungeon::addCreature(" << _item.name << ')' << std::endl;
+   //std::cout << "Dungeon::addCreature(" << _item.name << ')' << std::endl;
 }
 
 

@@ -4,5 +4,5 @@
 
 void Item::setOwner(Creature* _owner){
     owner = _owner;
-    std::cout << "setOwner(" << owner->name << ')' << std::endl;
+   //std::cout << "setOwner(" << owner->name << ')' << std::endl;
 }
