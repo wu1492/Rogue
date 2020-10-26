@@ -1,7 +1,7 @@
 # suffix rules don't allow pre-requisites to be used and are deprecated for
 # this reason.  The right way to do this is to use patterns.  The "%" pattern
 # allows any file to be matched.
-OBJS = ./src/main.o ./src/GridChar.o ./src/Action.o ./src/Armor.o ./src/BlessCurseOwner.o ./src/ChangedDisplayedType.o ./src/Creature.o ./src/CreatureAction.o ./src/Displayable.o ./src/DropPack.o ./src/Dungeon.o ./src/DungeonXMLHandler.o ./src/EndGame.o ./src/Hallucinate.o ./src/Item.o ./src/ItemAction.o ./src/Monster.o ./src/ObjectDisplayGrid.o ./src/Passage.o ./src/Player.o ./src/Remove.o ./src/Room.o ./src/Scroll.o ./src/Structure.o ./src/Sword.o ./src/Teleport.o ./src/UpdateDisplay.o ./src/YouWin.o
+OBJS = ./src/main.o ./src/GridChar.o ./src/KeyboardListener.o ./src/Action.o ./src/Armor.o ./src/BlessCurseOwner.o ./src/ChangedDisplayedType.o ./src/Creature.o ./src/CreatureAction.o ./src/Displayable.o ./src/DropPack.o ./src/Dungeon.o ./src/DungeonXMLHandler.o ./src/EndGame.o ./src/Hallucinate.o ./src/Item.o ./src/ItemAction.o ./src/Monster.o ./src/ObjectDisplayGrid.o ./src/Passage.o ./src/Player.o ./src/Remove.o ./src/Room.o ./src/Scroll.o ./src/Structure.o ./src/Sword.o ./src/Teleport.o ./src/UpdateDisplay.o ./src/YouWin.o
 CC = g++
 INCLUDE = -lxerces-c -lncurses -lpthread
 LIBS = 

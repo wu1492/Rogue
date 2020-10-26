@@ -13,12 +13,11 @@
 #include <sstream>
 #include "ObjectDisplayGrid.hpp"
 #include "GridChar.hpp"
+#include "KeyboardListener.hpp"
 std::atomic_bool isRunning(true);
 
 
-void displayDungeon(ObjectDisplayGrid* grid, Dungeon* dungeon){
-    
-    while(isRunning){
+void displayDungeon(ObjectDisplayGrid* grid, Dungeon* dungeon, int *x, int *y){
         int topHeight = dungeon->topHeight;
         int height = dungeon->bottomHeight + dungeon->topHeight + dungeon->gameHeight;
         for(int i = 0;i < dungeon->width;i++){
@@ -40,10 +39,13 @@ void displayDungeon(ObjectDisplayGrid* grid, Dungeon* dungeon){
             }
             for(int k = 0; k<dungeon->rooms[i]->creature_size;k++){
                 grid->addObjectToDisplay(new GridChar(dungeon->rooms[i]->creatures[k]->type),dungeon->rooms[i]->creatures[k]->posX+posleft+1,dungeon->rooms[i]->creatures[k]->posY+postop+1);
+                if(dungeon->rooms[i]->creatures[k]->type == '@'){
+                    *x = dungeon->rooms[i]->creatures[k]->posX+posleft+1;
+                    *y = dungeon->rooms[i]->creatures[k]->posY+postop+1;
+                }
             }
             for(int k = 0; k<dungeon->rooms[i]->item_size;k++){
-                //我不知道item该用啥符号表示，所以目前暂时用n，我去piazza问一下
-                grid->addObjectToDisplay(new GridChar('n'),dungeon->rooms[i]->items[k]->posX+posleft+1,dungeon->rooms[i]->items[k]->posY+postop+1);
+                grid->addObjectToDisplay(new GridChar(dungeon->rooms[i]->items[k]->type),dungeon->rooms[i]->items[k]->posX+posleft+1,dungeon->rooms[i]->items[k]->posY+postop+1);
             }
             for(int l = postop; l <= posbottom;l++){
                 grid->addObjectToDisplay(new GridChar('X'),posright,l);
@@ -87,7 +89,6 @@ void displayDungeon(ObjectDisplayGrid* grid, Dungeon* dungeon){
             }
         }
         grid -> update();
-    }
 }
 
 int main(int argc, char* argv[]) {
@@ -158,8 +159,12 @@ int main(int argc, char* argv[]) {
 	
     ObjectDisplayGrid grid(dungeon->width,dungeon->topHeight,dungeon->gameHeight,dungeon->bottomHeight,5);
     ObjectDisplayGrid* pGrid = &grid;
-    std::thread displayThread(displayDungeon, pGrid,dungeon);
-    displayThread.join();
+    int x = -1;
+    int y = -1;
+    
+    displayDungeon(pGrid,dungeon,&x,&y);
+    KeyboardListener listener(pGrid);
+    listener.run(x,y);
     
     return 0;
 }

@@ -115,6 +115,7 @@ void DungeonXMLHandler::startElement(const XMLCh* uri, const XMLCh* localName, c
             std::string name = xmlChToString(getXMLChAttributeFromString(attributes,"name"));
             Scroll* scroll_ptr = new Scroll(name); // Implemented
             scroll_ptr->setID(room,serial); // Implemented
+            scroll_ptr->type = '?';
             if(playerbeingparsed != NULL){
                 scroll_ptr -> setOwner(playerbeingparsed);
             }
@@ -133,6 +134,7 @@ void DungeonXMLHandler::startElement(const XMLCh* uri, const XMLCh* localName, c
             std::string name = xmlChToString(getXMLChAttributeFromString(attributes,"name"));
             Armor* armor_ptr = new Armor(name); // Implemented
             armor_ptr ->setID(room,serial); // Implemented
+            armor_ptr->type = ']';
             if(playerbeingparsed != NULL){
                 armor_ptr -> setOwner(playerbeingparsed);
                 playerbeingparsed -> setArmor(*armor_ptr);
@@ -152,6 +154,7 @@ void DungeonXMLHandler::startElement(const XMLCh* uri, const XMLCh* localName, c
             std::string name = xmlChToString(getXMLChAttributeFromString(attributes,"name"));
             Sword* sword_ptr = new Sword(name); // Implemented
             sword_ptr->setID(room,serial); // Implemented
+            sword_ptr->type = ')';
             if(playerbeingparsed != NULL){
                 sword_ptr -> setOwner(playerbeingparsed);
                 playerbeingparsed->setWeapon(*sword_ptr);

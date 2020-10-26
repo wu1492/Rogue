@@ -90,7 +90,7 @@ void ObjectDisplayGrid::update() {
 
 void ObjectDisplayGrid::writeLine(int line, std::string message) {
 	// messages start from 0, height and go until width,(height + messages)
-	mvaddstr(height + line, 0, message.c_str());
+	mvaddstr(line, 0, message.c_str());
 	// clear after what we wrote to EOL
 	clrtoeol();
 }
