@@ -28,9 +28,9 @@ void displayDungeon(ObjectDisplayGrid* grid, Dungeon* dungeon, int *x, int *y){
         
         for(int i = 0; i < dungeon->num_rooms;i++){
             int posleft = dungeon->rooms[i]->posX;
-            int posright = posleft + dungeon->rooms[i]->width+1;
+            int posright = posleft + dungeon->rooms[i]->width-1;
             int postop = dungeon->rooms[i]->posY + topHeight;
-            int posbottom = postop + dungeon->rooms[i]->height+1;
+            int posbottom = postop + dungeon->rooms[i]->height-1;
             
             for(int k = postop +1; k < posbottom;k++){
                 for(int j = posleft + 1; j < posright;j++){
@@ -38,14 +38,14 @@ void displayDungeon(ObjectDisplayGrid* grid, Dungeon* dungeon, int *x, int *y){
                 }
             }
             for(int k = 0; k<dungeon->rooms[i]->creature_size;k++){
-                grid->addObjectToDisplay(new GridChar(dungeon->rooms[i]->creatures[k]->type),dungeon->rooms[i]->creatures[k]->posX+posleft+1,dungeon->rooms[i]->creatures[k]->posY+postop+1);
+                grid->addObjectToDisplay(new GridChar(dungeon->rooms[i]->creatures[k]->type),dungeon->rooms[i]->creatures[k]->posX+posleft,dungeon->rooms[i]->creatures[k]->posY+postop);
                 if(dungeon->rooms[i]->creatures[k]->type == '@'){
-                    *x = dungeon->rooms[i]->creatures[k]->posX+posleft+1;
-                    *y = dungeon->rooms[i]->creatures[k]->posY+postop+1;
+                    *x = dungeon->rooms[i]->creatures[k]->posX+posleft;
+                    *y = dungeon->rooms[i]->creatures[k]->posY+postop;
                 }
             }
             for(int k = 0; k<dungeon->rooms[i]->item_size;k++){
-                grid->addObjectToDisplay(new GridChar(dungeon->rooms[i]->items[k]->type),dungeon->rooms[i]->items[k]->posX+posleft+1,dungeon->rooms[i]->items[k]->posY+postop+1);
+                grid->addObjectToDisplay(new GridChar(dungeon->rooms[i]->items[k]->type),dungeon->rooms[i]->items[k]->posX+posleft,dungeon->rooms[i]->items[k]->posY+postop);
             }
             for(int l = postop; l <= posbottom;l++){
                 grid->addObjectToDisplay(new GridChar('X'),posright,l);
@@ -62,28 +62,38 @@ void displayDungeon(ObjectDisplayGrid* grid, Dungeon* dungeon, int *x, int *y){
                     
                 if(dungeon->passages[l]->posxs[m] == dungeon->passages[l]->posxs[m+1]){
                     int x = dungeon->passages[l]->posxs[m];
-                    for(int k = dungeon->passages[l]->posys[m]; k <= dungeon->passages[l]->posys[m+1];k++){
-                        if(grid->getchar(x,k+topHeight) != '.'){
+                    int min = dungeon->passages[l]->posys[m];
+                    int max = dungeon->passages[l]->posys[m+1];
+                    if(min > max){
+                        int temp = min;
+                        min = max;
+                        max = temp;
+                    }
+                    for(int k = min; k <= max;k++){
                             if(grid->getchar(x,k+topHeight) == 'X'){ 
                                 grid->addObjectToDisplay(new GridChar('+'),x,k+topHeight);
                             }
                             else{
                                 grid->addObjectToDisplay(new GridChar('#'),x,k+topHeight);
                             }
-                        }
                     }
                 }
                 else{
                     int y = dungeon->passages[l]->posys[m];
-                    for(int k = dungeon->passages[l]->posxs[m]; k <= dungeon->passages[l]->posxs[m+1];k++){
-                        if(grid->getchar(k,y+topHeight) != '.'){
+                    int min = dungeon->passages[l]->posxs[m];
+                    int max = dungeon->passages[l]->posxs[m+1];
+                    if(min > max){
+                        int temp = min;
+                        min = max;
+                        max = temp;
+                    }
+                    for(int k = min; k <= max;k++){
                             if(grid->getchar(k,y+topHeight) == 'X'){ 
                                 grid->addObjectToDisplay(new GridChar('+'),k,y+topHeight);
                             }
                             else{
                                 grid->addObjectToDisplay(new GridChar('#'),k,y+topHeight);
                             }
-                        }
                     }
                 }
             }
