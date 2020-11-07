@@ -9,15 +9,18 @@
 #include "DungeonXMLHandler.hpp"
 #include <exception>
 #include <atomic> 
-#include <thread>
 #include <sstream>
 #include "ObjectDisplayGrid.hpp"
 #include "GridChar.hpp"
 #include "KeyboardListener.hpp"
+#include <vector> 
+#include <thread>
+#include <mutex>
+
 std::atomic_bool isRunning(true);
 
 
-void displayDungeon(ObjectDisplayGrid* grid, Dungeon* dungeon, int *x, int *y){
+void displayDungeon(ObjectDisplayGrid* grid, Dungeon* dungeon, int *x, int *y,int* room_num){
         int topHeight = dungeon->topHeight;
         int height = dungeon->bottomHeight + dungeon->topHeight + dungeon->gameHeight;
         for(int i = 0;i < dungeon->width;i++){
@@ -26,26 +29,38 @@ void displayDungeon(ObjectDisplayGrid* grid, Dungeon* dungeon, int *x, int *y){
             }
         }
         
+        dungeon->item_stack_list.resize(dungeon->width);
+        for(int i = 0;i<dungeon->width;i++){
+            dungeon->item_stack_list[i].resize(height);
+        }
         for(int i = 0; i < dungeon->num_rooms;i++){
             int posleft = dungeon->rooms[i]->posX;
             int posright = posleft + dungeon->rooms[i]->width-1;
             int postop = dungeon->rooms[i]->posY + topHeight;
             int posbottom = postop + dungeon->rooms[i]->height-1;
             
+
             for(int k = postop +1; k < posbottom;k++){
+                
                 for(int j = posleft + 1; j < posright;j++){
                     grid->addObjectToDisplay(new GridChar('.'),j,k);
                 }
             }
             for(int k = 0; k<dungeon->rooms[i]->creature_size;k++){
                 grid->addObjectToDisplay(new GridChar(dungeon->rooms[i]->creatures[k]->type),dungeon->rooms[i]->creatures[k]->posX+posleft,dungeon->rooms[i]->creatures[k]->posY+postop);
-                if(dungeon->rooms[i]->creatures[k]->type == '@'){
-                    *x = dungeon->rooms[i]->creatures[k]->posX+posleft;
-                    *y = dungeon->rooms[i]->creatures[k]->posY+postop;
-                }
+                dungeon->addCreature(dungeon->rooms[i]->creatures[k]);
+                dungeon->creatures.back()->posX = dungeon->rooms[i]->creatures[k]->posX+posleft;
+                dungeon->creatures.back()->posY = dungeon->rooms[i]->creatures[k]->posY+postop;
+                //std::cout << dungeon->rooms[i]->creatures[k]->type;
             }
             for(int k = 0; k<dungeon->rooms[i]->item_size;k++){
                 grid->addObjectToDisplay(new GridChar(dungeon->rooms[i]->items[k]->type),dungeon->rooms[i]->items[k]->posX+posleft,dungeon->rooms[i]->items[k]->posY+postop);
+                dungeon->item_stack_list[dungeon->rooms[i]->items[k]->posX+posleft][dungeon->rooms[i]->items[k]->posY+postop].push_back(dungeon->rooms[i]->items[k]);
+            }
+            if(i == (dungeon->player->room-1)){
+                grid->addObjectToDisplay(new GridChar('@'),dungeon->player->posX+posleft,dungeon->player->posY+postop);
+                *x = dungeon->player->posX+posleft;
+                *y = dungeon->player->posY+postop;
             }
             for(int l = postop; l <= posbottom;l++){
                 grid->addObjectToDisplay(new GridChar('X'),posright,l);
@@ -164,17 +179,22 @@ int main(int argc, char* argv[]) {
         std::cout << "Unexpected Exception \n" ;
         return -1;
 	}
-
+    
     xercesc::XMLPlatformUtils::Terminate(); //valgrind will say there's memory errors if not included
 	
     ObjectDisplayGrid grid(dungeon->width,dungeon->topHeight,dungeon->gameHeight,dungeon->bottomHeight,5);
     ObjectDisplayGrid* pGrid = &grid;
     int x = -1;
     int y = -1;
+    int room_num = -1;    // The room pkayer is in
+    int creature_num = -1;  // the index of the player in its room
+
+    int height = dungeon->topHeight + dungeon->gameHeight;
     
-    displayDungeon(pGrid,dungeon,&x,&y);
+    displayDungeon(pGrid,dungeon,&x,&y,&room_num);
+
     KeyboardListener listener(pGrid);
-    listener.run(x,y);
+    listener.run(&x,&y,dungeon);
     
     return 0;
 }

@@ -6,11 +6,9 @@
 #include "Item.hpp"
 
 class Scroll: public Item{
-private:
-    int room;
-    std::string name;
-    int serial;
 public:
+    int room;
+    int serial;
     Scroll(std::string _name);
     void setID(int room, int serial);
 };

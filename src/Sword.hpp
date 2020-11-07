@@ -7,10 +7,10 @@
 
 class Sword: public Item{
 private:
+    
+public:
     int room;
     int serial;
-    std::string name;
-public:
     Sword(std::string _name);
     void setID(int room, int serial);
 };

@@ -88,8 +88,8 @@ void DungeonXMLHandler::startElement(const XMLCh* uri, const XMLCh* localName, c
             playerbeingparsed -> serial = _serial;
             playerbeingparsed -> name = _name;
             playerbeingparsed -> type = '@';
+            dungeon->player = playerbeingparsed;
             creabeingparsed = playerbeingparsed;
-            roombeingparsed -> setCreature(playerbeingparsed);
             //dungeon->addCreature(*creabeingparsed);
             is_room = false;
             is_item = false;
@@ -137,7 +137,7 @@ void DungeonXMLHandler::startElement(const XMLCh* uri, const XMLCh* localName, c
             armor_ptr->type = ']';
             if(playerbeingparsed != NULL){
                 armor_ptr -> setOwner(playerbeingparsed);
-                playerbeingparsed -> setArmor(*armor_ptr);
+                playerbeingparsed -> setArmor(armor_ptr);
             }
             else{
                 roombeingparsed->setItem(armor_ptr);
@@ -157,13 +157,12 @@ void DungeonXMLHandler::startElement(const XMLCh* uri, const XMLCh* localName, c
             sword_ptr->type = ')';
             if(playerbeingparsed != NULL){
                 sword_ptr -> setOwner(playerbeingparsed);
-                playerbeingparsed->setWeapon(*sword_ptr);
+                playerbeingparsed->setWeapon(sword_ptr);
             }
             else{
                 roombeingparsed->setItem(sword_ptr);
             }
             itembeingparsed = sword_ptr;
-            //dungeon->addItem(*itembeingparsed);
             is_room = false;
             is_item = true;
             is_crea = false;

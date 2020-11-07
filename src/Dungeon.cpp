@@ -37,11 +37,11 @@ void Dungeon::addRoom(Room* _room)
 
 
 // buggy
-void Dungeon::addCreature(Creature _creature)
+void Dungeon::addCreature(Creature* _creature)
 {
     num_creatures++;
     creatures.resize(num_creatures);
-    creatures[num_creatures - 1] = &_creature;
+    creatures[num_creatures - 1] = _creature;
    //std::cout << "Dungeon::addCreature(" << _creature.name << ')' << std::endl;
 }
 

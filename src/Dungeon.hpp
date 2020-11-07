@@ -7,7 +7,7 @@
 #include "Creature.hpp"
 #include "Item.hpp"
 #include "Passage.hpp"
-
+#include "Player.hpp"
 
 class Dungeon{
 private:
@@ -29,12 +29,13 @@ public:
     int num_items;
 	std::vector<Item*> items; 
     int num_rooms;
+    std::vector<std::vector<std::vector<Item*>>> item_stack_list;
     void getDungeon(std::string name, int width, int gameHeight);
     void addRoom(Room*);
-    void addCreature(Creature);
+    void addCreature(Creature*);
     void addPassage(Passage*);
     void addItem(Item);
-
+    Player* player;
 	std::string toString();
 
 };
