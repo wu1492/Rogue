@@ -3,15 +3,23 @@
 #include "Player.hpp"
 #include "Creature.hpp"
 #include "Dungeon.hpp"
+#include "Item.hpp"
 #include <vector> 
 
 class KeyboardListener {
 private:
     /** Object display grid reference to write errors */
     ObjectDisplayGrid* grid;
-    Dungeon* dungeon;
     /** set to false to stop running the keyboard listener */
     bool running = false;
+    char** map;
+    bool is_hallucinate;
+    int hallucinate_count;
+    Item* sword_worn;
+    Item* armor_worn;
+    char old;
+    Player* player;
+    int move_count;
 
 public:
     /**
@@ -24,8 +32,9 @@ public:
      * Runs the keyboard listener in a thread
      */
     void run(int* x, int* y,Dungeon* dungeon);
-    bool move(int x, int y, int old_x, int old_y, char* old, Dungeon* dungeon,int topHeight);
+    bool move(int x, int y, int old_x, int old_y, Dungeon* dungeon,int topHeight);
     bool detect_monster(int x,int y);
-    void display_damage(int x, int y,Creature* monster,Player* player,int score,int screen_bottom);
+    void creature_action(Creature* crea,CreatureAction* action, std::string name,bool is_player,Dungeon* dungeon,int screen_bottom);
+    void display_damage(int x, int y,int player_x, int player_y,Creature* monster,int score,int screen_bottom, Dungeon* dungeon);
 };
 

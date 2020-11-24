@@ -61,6 +61,8 @@ void displayDungeon(ObjectDisplayGrid* grid, Dungeon* dungeon, int *x, int *y,in
                 grid->addObjectToDisplay(new GridChar('@'),dungeon->player->posX+posleft,dungeon->player->posY+postop);
                 *x = dungeon->player->posX+posleft;
                 *y = dungeon->player->posY+postop;
+                dungeon->player->posX = *x;
+                dungeon->player->posY = *y;
             }
             for(int l = postop; l <= posbottom;l++){
                 grid->addObjectToDisplay(new GridChar('X'),posright,l);

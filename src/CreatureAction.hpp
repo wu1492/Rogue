@@ -9,7 +9,6 @@ class Creature;
 class CreatureAction: public Action {
     public:
         Creature* owner;
-        std::string name;
         CreatureAction(Creature* owner);
 };
 

@@ -84,7 +84,9 @@ void DungeonXMLHandler::startElement(const XMLCh* uri, const XMLCh* localName, c
             int _room = std::stoi(xmlChToString(getXMLChAttributeFromString(attributes,"room"))); 
             std::string _name = xmlChToString(getXMLChAttributeFromString(attributes,"name"));
             playerbeingparsed = new Player(); // Implemented
-            playerbeingparsed -> room = _room;
+            playerbeingparsed->is_teleport = false;
+            playerbeingparsed->old_teleport = '.';
+            playerbeingparsed -> room = roombeingparsed->room;
             playerbeingparsed -> serial = _serial;
             playerbeingparsed -> name = _name;
             playerbeingparsed -> type = '@';
@@ -100,6 +102,8 @@ void DungeonXMLHandler::startElement(const XMLCh* uri, const XMLCh* localName, c
             int _room = std::stoi(xmlChToString(getXMLChAttributeFromString(attributes,"room"))); 
             std::string _name = xmlChToString(getXMLChAttributeFromString(attributes,"name"));
             monsterbeingparsed = new Monster(); // Implemented
+            monsterbeingparsed->is_teleport = false;
+            monsterbeingparsed->old_teleport = '.';
             monsterbeingparsed -> setID(_room,_serial);
             monsterbeingparsed -> setName(_name);
             roombeingparsed -> setCreature(monsterbeingparsed);
@@ -176,14 +180,16 @@ void DungeonXMLHandler::startElement(const XMLCh* uri, const XMLCh* localName, c
             else if(name.compare("BlessArmor")==0){
                 itemactionbeingparsed = new BlessCurseOwner(itembeingparsed); // Need to be Implement
             }
+            itemactionbeingparsed->name = name;
             is_item_action = true;
             is_crea_action = false;
+            itembeingparsed->action = itemactionbeingparsed;
         }else if(case_insensitive_match(qNameStr,"CreatureAction")){
             std::string type = xmlChToString(getXMLChAttributeFromString(attributes,"type"));
             std::string name = xmlChToString(getXMLChAttributeFromString(attributes,"name"));
-            
             if(name.compare("Teleport") == 0){
                 creaactionbeingparsed = new Teleport(name,creabeingparsed); // Need to be implement
+                creabeingparsed->is_teleport = true;
             }
             else if(name.compare("DropPack")==0){
                 creaactionbeingparsed = new DropPack(name,creabeingparsed); // Need to be implement
@@ -207,9 +213,11 @@ void DungeonXMLHandler::startElement(const XMLCh* uri, const XMLCh* localName, c
             if(type.compare("death")==0){
                 creabeingparsed->setDeathAction(creaactionbeingparsed);
             }
-            if(type.compare("hits")==0){
+            else if(type.compare("hit")==0){
+                
                 creabeingparsed->setHitAction(creaactionbeingparsed);
             }
+            creaactionbeingparsed->name = name;
             is_item_action = false;
             is_crea_action = true;
         }else if(case_insensitive_match(qNameStr,"Passage")){
@@ -345,6 +353,7 @@ void DungeonXMLHandler::endElement(const XMLCh* uri, const XMLCh* localName, con
             creabeingparsed = NULL;
         } else if (case_insensitive_match(qNameStr,"CreatureAction")) {
             creaactionbeingparsed = NULL;
+            is_crea_action = false;
         } else if (case_insensitive_match(qNameStr,"Player")) {
             playerbeingparsed = NULL;
         } else if (case_insensitive_match(qNameStr,"Monster")) {

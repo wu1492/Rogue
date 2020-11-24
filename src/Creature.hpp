@@ -18,11 +18,14 @@ private:
 public:
     std::vector<CreatureAction*> deaths;
     std::vector<CreatureAction*> hits;
+    //CreatureAction* action;
     std::string name;
     int room;
     int serial;
     int death_size;
     int hits_size;
+    bool is_teleport;
+    char old_teleport;
     
     Creature();
     void setHp(int h);

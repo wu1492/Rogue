@@ -12,7 +12,7 @@ class Item : public Displayable{
 public:
     std::string name;  // add name
     Creature* owner; // bug, item可以有主人也可以没有，需要解决owner的初始化问题，但不急，可以下次step解决
-    std::vector<ItemAction*> actions;
+    ItemAction* action;
     void setOwner(Creature* owner);
 };
 

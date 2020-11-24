@@ -9,6 +9,6 @@ void Action::setIntValue(int v){
     //std::cout << "Action::setIntValue(" << v << ')'<< std::endl;
 }
 void Action::setCharValue(char c){
-    cValue = 'a';
+    cValue = c;
     //std::cout << "Action::setCharValue(" << c << ')'<< std::endl;
 }
